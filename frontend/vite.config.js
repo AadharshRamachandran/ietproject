@@ -11,6 +11,11 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    outDir: 'dist',
+    sourcemap: false, // Disable source maps in production for smaller bundle
+    minify: 'terser',
+  },
   server: {
     port: 5173,
     proxy: {

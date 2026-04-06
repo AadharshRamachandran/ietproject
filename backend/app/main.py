@@ -1,6 +1,7 @@
-"""
-ModelMesh Backend  FastAPI Application Entry Point
+﻿"""
+AetherNet Backend - FastAPI Application Entry Point
 Registers all routers, CORS middleware, lifespan handlers, and the SSE event stream.
+Production-ready with environment-specific configuration.
 """
 
 import logging
@@ -25,29 +26,41 @@ settings=get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup and shutdown logic."""
-    logger.info("ðŸš€ ModelMesh backend starting...")
+    env_label = "PRODUCTION" if settings.is_production else "DEVELOPMENT"
+    logger.info(f"{env_label} - AetherNet backend starting...")
+    logger.info(f"Environment: {settings.app_env}")
+    logger.info(f"CORS Origins: {', '.join(settings.cors_origins_list)}")
     await create_indexes()
     await seed_base_models()
     yield
     await close_db()
-    logger.info("ðŸ›‘ ModelMesh backend shut down.")
+    logger.info("AetherNet backend shut down.")
 
 
 app=FastAPI(
-    title="ModelMesh API",
-    description="Decentralized AI Model Marketplace  Backend API",
+    title="AetherNet API",
+    description="Decentralized AI Model Marketplace - Backend API",
     version="1.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc",
+    docs_url="/docs" if not settings.is_production else None,
+    redoc_url="/redoc" if not settings.is_production else None,
     lifespan=lifespan,
 )
 
+# Configure CORS with environment-specific origins
+cors_origins = settings.cors_origins_list
+allow_credentials = True
+
+# Allow all origins in development for easier testing
+if not settings.is_production and "localhost" in cors_origins[0]:
+    cors_origins = cors_origins + ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins_list,
-    allow_credentials=True,
+    allow_origins=cors_origins,
+    allow_credentials=allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Content-Range", "X-Content-Range"],
 )
 
 app.include_router(auth.router,     prefix="/api/v1")
@@ -97,13 +110,4 @@ async def event_stream(request: Request):
 
 @app.get("/health", tags=["Health"])
 async def health():
-    return {"status": "ok", "service": "ModelMesh API"}
-
-
-@app.get("/", tags=["Health"])
-async def root():
-    return {
-        "service": "ModelMesh",
-        "message": "Data stays local. Intelligence is shared.",
-        "docs": "/docs",
-    }
+    return {"status": "ok", "service": "AetherNet API"}

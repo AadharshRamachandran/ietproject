@@ -1,30 +1,50 @@
-import axios from 'axios';
+﻿import axios from 'axios';
 
-const API_BASE_URL=import.meta.env.VITE_API_BASE_URL || '/api/v1';
+// Use VITE_API_BASE_URL if provided, otherwise construct from VITE_BACKEND_URL
+// In production, VITE_API_BASE_URL will be the full backend URL + /api/v1
+// In development, defaults to /api/v1 (proxied by Vite)
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL 
+  ? `${import.meta.env.VITE_API_BASE_URL}/api/v1`
+  : (import.meta.env.VITE_BACKEND_URL 
+      ? `${import.meta.env.VITE_BACKEND_URL}/api/v1`
+      : '/api/v1');
+
+console.log('[AetherNet API] Base URL:', API_BASE_URL);
 
 const api=axios.create({
     baseURL: API_BASE_URL,
     headers: { 'Content-Type': 'application/json' },
+    withCredentials: true,
 });
 
+// Attach Clerk JWT token to outgoing requests
 api.interceptors.request.use(async (config) => {
     try {
         const clerk=window.Clerk;
         if (clerk?.session) {
             const token=await clerk.session.getToken();
-            if (token) config.headers.Authorization=`Bearer ${token}`;
+            if (token) {
+                config.headers.Authorization=`Bearer ${token}`;
+            }
         }
     } catch (err) {
-        console.warn('[ModelMesh] Could not attach Clerk token:', err.message);
+        console.warn('[AetherNet] Could not attach Clerk token:', err.message);
     }
     return config;
 });
 
+// Handle response errors
 api.interceptors.response.use(
     (res) => res,
     (err) => {
-        if (err.response?.status=== 401) {
-            console.warn('[ModelMesh] 401 Unauthorized â€” session may have expired.');
+        if (err.response?.status === 401) {
+            console.warn('[AetherNet] 401 Unauthorized - session may have expired.');
+        }
+        if (err.response?.status === 403) {
+            console.error('[AetherNet] 403 Forbidden - insufficient permissions.');
+        }
+        if (err.code === 'ECONNABORTED') {
+            console.error('[AetherNet] Request timeout - backend may be unavailable.');
         }
         return Promise.reject(err);
     }
@@ -48,28 +68,3 @@ export const modelsApi={
     delete: (id) => api.delete(`/models/${id}`),
 
     publish: (formData) => api.post('/models/publish', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        onUploadProgress: formData._onProgress || undefined,
-    }),
-};
-
-export const versionsApi={
-    list: (modelId) => api.get(`/models/${modelId}/versions`),
-    get: (modelId, verId) => api.get(`/models/${modelId}/versions/${verId}`),
-    upload: (modelId, formData) => api.post(`/models/${modelId}/versions/upload`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-    }),
-};
-
-export const sessionsApi={
-    create: (data) => api.post('/sessions', data),
-    list: (params) => api.get('/sessions', { params }),
-    get: (key) => api.get(`/sessions/${key}`),
-    start: (key, data={ confirm_min_clients: true }) => api.post(`/sessions/${key}/start`, data),
-    publishFinal: (key) => api.post(`/sessions/${key}/publish-final`),
-    requestAccess: (id, data={}) => api.post(`/sessions/${id}/request-access`, data),
-    approveRequest: (id, requestUserId) => api.post(`/sessions/${id}/requests/${requestUserId}/approve`),
-    lockJoin: (id) => api.post(`/sessions/${id}/lock-join`),
-    delete: (id) => api.delete(`/sessions/${id}`),
-    clearEvents: (key) => api.delete(`/sessions/${key}/clear-events`),
-};
