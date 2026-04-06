@@ -2,10 +2,6 @@
   "buildCommand": "cd frontend && npm run build",
   "outputDirectory": "frontend/dist",
   "installCommand": "cd frontend && npm install",
-  "env": {
-    "VITE_API_BASE_URL": "@api_base_url",
-    "VITE_CLERK_PUBLISHABLE_KEY": "@clerk_publishable_key"
-  },
   "regions": ["iad1"],
   "functions": {
     "api/**": {
