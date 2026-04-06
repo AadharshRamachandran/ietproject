@@ -14,7 +14,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false, // Disable source maps in production for smaller bundle
-    minify: 'terser',
+    minify: 'esbuild',
   },
   server: {
     port: 5173,

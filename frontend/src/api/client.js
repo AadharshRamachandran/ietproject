@@ -66,5 +66,29 @@ export const modelsApi={
     list: (params) => api.get('/models', { params }),
     get: (id) => api.get(`/models/${id}`),
     delete: (id) => api.delete(`/models/${id}`),
-
     publish: (formData) => api.post('/models/publish', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+};
+
+export const versionsApi={
+    list: (modelId) => api.get(`/models/${modelId}/versions`),
+    upload: (modelId, formData) => api.post(`/models/${modelId}/versions`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+};
+
+export const sessionsApi={
+    list: (params) => api.get('/sessions', { params }),
+    get: (sessionKey) => api.get(`/sessions/${sessionKey}`),
+    create: (payload) => api.post('/sessions', payload),
+    start: (sessionKey, payload={}) => api.post(`/sessions/${sessionKey}/start`, payload),
+    publishFinal: (sessionKey) => api.post(`/sessions/${sessionKey}/publish-final`),
+    requestAccess: (sessionId, payload={}) => api.post(`/sessions/${sessionId}/request-access`, payload),
+    approveRequest: (sessionId, requestUserId) => api.post(`/sessions/${sessionId}/requests/${requestUserId}/approve`),
+    lockJoin: (sessionId) => api.post(`/sessions/${sessionId}/lock-join`),
+    join: (sessionKey, payload={}) => api.post(`/sessions/${sessionKey}/join`, payload),
+    createInvite: (sessionKey) => api.post(`/sessions/${sessionKey}/invite`),
+    clearEvents: (sessionKey) => api.delete(`/sessions/${sessionKey}/clear-events`),
+    delete: (sessionId) => api.delete(`/sessions/${sessionId}`),
+};
