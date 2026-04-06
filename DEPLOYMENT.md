@@ -1,4 +1,4 @@
-# AetherNet Deployment Guide
+# AetherNet Deployment Guide (Docker on Render)
 
 ## Prerequisites
 
@@ -11,7 +11,7 @@
 
 ## Step-by-Step Deployment
 
-### 1. Backend Deployment to Render
+### 1. Backend Deployment to Render (Docker)
 
 #### 1.1 Prepare MongoDB Atlas
 
@@ -29,7 +29,42 @@ Copy `.env.production.example` to `.env.production` and fill in:
 - `PINATA_JWT`: From Pinata
 - `CORS_ORIGINS`: Will update after frontend deployment
 
-#### 1.3 Deploy to Render
+#### 1.3 Create Backend Dockerfile
+
+Create [backend/Dockerfile](backend/Dockerfile) with this content:
+
+```dockerfile
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Install system packages needed by scientific Python dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+   build-essential \
+   gfortran \
+   libopenblas-dev \
+   liblapack-dev \
+   && rm -rf /var/lib/apt/lists/*
+
+COPY backend/requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+COPY backend /app/backend
+
+WORKDIR /app/backend
+EXPOSE 10000
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "10000"]
+```
+
+Important:
+- This Docker setup uses your existing [backend/requirements.txt](backend/requirements.txt) as requested.
+- You do not need [backend/requirements-prod.txt](backend/requirements-prod.txt) for Render Docker deploy.
+
+#### 1.4 Deploy to Render
 
 1. Commit and push all changes to GitHub
 ```bash
@@ -43,9 +78,8 @@ git push origin main
 4. Connect your GitHub repository
 5. Configure:
    - **Name**: `aethernet-backend`
-   - **Environment**: Python 3
-   - **Build Command**: `pip install -r backend/requirements-prod.txt`
-   - **Start Command**: `uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT`
+   - **Environment**: Docker
+   - **Dockerfile Path**: `backend/Dockerfile`
    - **Region**: Choose closest region
 
 6. Add Environment Variables in Render dashboard:
@@ -60,10 +94,10 @@ git push origin main
    - `FL_SERVER_PORT`: `8080`
 
 7. Click "Create Web Service"
-8. Wait for deployment (2-5 minutes)
+8. Wait for deployment (5-10 minutes first time)
 9. Note your backend URL (e.g., `https://aethernet-backend.onrender.com`)
 
-#### 1.4 Test Backend
+#### 1.5 Test Backend
 
 ```bash
 curl https://aethernet-backend.onrender.com/api/v1/health
@@ -155,6 +189,7 @@ Enable automatic backups in MongoDB Atlas:
 | Issue | Solution |
 |---|---|
 | Backend returns 500 | Check Render logs; verify MongoDB connection; restart service |
+| Build fails on Python packages | Use Docker environment and verify [backend/Dockerfile](backend/Dockerfile) installs system build tools |
 | Frontend blank page | Check Vercel build logs; verify VITE_API_BASE_URL is set |
 | CORS errors | Verify CORS_ORIGINS includes frontend URL; check backend logs |
 | Authentication fails | Verify Clerk keys match; check token expiration |
@@ -175,6 +210,11 @@ PINATA_API_SECRET=...
 APP_ENV=production
 CORS_ORIGINS=https://aethernet.vercel.app
 FRONTEND_URL=https://aethernet.vercel.app
+```
+
+Backend dependency source used by Docker build:
+```
+backend/requirements.txt
 ```
 
 ### Frontend (Vercel Dashboard)
