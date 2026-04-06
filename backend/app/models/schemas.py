@@ -54,6 +54,7 @@ class ModelOut(BaseModel):
     current_version_cid: Optional[str]=None
     pinata_gateway_url: Optional[str]=None
     owner_id: str
+    owner_clerk_user_id: Optional[str]=None
     owner_username: str
     is_public: bool
     is_base_model: bool=False
@@ -70,6 +71,7 @@ class VersionOut(BaseModel):
     parent_id: str
     new_cid: str
     pinata_gateway_url: str
+    filename: Optional[str]=None
     session_key: Optional[str]=None
     metrics_json: Dict[str, Any]
     notes: str

@@ -2,26 +2,35 @@
 ModelMesh Backend  Model Routes
 GET  /models                List marketplace models (no auth)
 POST /models                Create model metadata (auth required)
-POST /models/publish        Upload weights â†’ Pinata â†’ create model + version (auth)
+POST /models/publish        Upload weights -> Pinata -> create model + version (auth)
 GET  /base-models           List seeded base model architectures (no auth)
 GET  /models/{id}           Get single model with versions
 DELETE /models/{id}         Delete model (owner only)
 """
 
-from fastapi import APIRouter, HTTPException, status, Depends, Query, UploadFile, File, Form
+import logging
+import os
 from datetime import datetime, timezone
-from bson import ObjectId
 from typing import Optional, List
+
+from bson import ObjectId
+from fastapi import APIRouter, HTTPException, status, Depends, Query, UploadFile, File, Form
+from fastapi.responses import StreamingResponse
+import httpx
 
 from app.models.schemas import ModelCreate, ModelOut, BaseModelOut
 from app.core.database import (
-    get_models_collection, get_users_collection,
-    get_versions_collection, get_base_models_collection, BASE_MODELS,
+    get_models_collection,
+    get_users_collection,
+    get_versions_collection,
+    get_base_models_collection,
+    BASE_MODELS,
 )
 from app.core.security import get_current_user
 from app.services.storage_service import upload_file_to_pinata, get_gateway_url
 
 router=APIRouter(tags=["Models"])
+logger=logging.getLogger(__name__)
 
 ALLOWED_WEIGHT_EXTS={".pt", ".pth", ".onnx", ".h5", ".bin", ".safetensors", ".pkl"}
 
@@ -37,6 +46,7 @@ async def _resolve_arch_name(base_model_id: str) -> str:
 async def _enrich_model(doc: dict, users_col) -> ModelOut:
     owner=await users_col.find_one({"_id": ObjectId(doc["owner_id"])}) if ObjectId.is_valid(doc.get("owner_id", "")) else None
     owner_username=owner.get("username", "unknown") if owner else "unknown"
+    owner_clerk_user_id=owner.get("clerk_user_id") if owner else doc.get("owner_clerk_user_id")
     cid=doc.get("current_version_cid")
     return ModelOut(
         id=str(doc["_id"]),
@@ -50,6 +60,7 @@ async def _enrich_model(doc: dict, users_col) -> ModelOut:
         current_version_cid=cid,
         pinata_gateway_url=get_gateway_url(cid) if cid else None,
         owner_id=doc["owner_id"],
+        owner_clerk_user_id=owner_clerk_user_id,
         owner_username=owner_username,
         is_public=doc.get("is_public", True),
         download_count=doc.get("download_count", 0),
@@ -91,6 +102,7 @@ async def list_base_models_catalogue():
             current_version_cid=None,
             pinata_gateway_url=None,
             owner_id="system",
+            owner_clerk_user_id=None,
             owner_username="AetherNet",
             is_public=True,
             is_base_model=True,
@@ -148,62 +160,77 @@ async def publish_model(
     Accepts multipart/form-data.
     """
     import os
-    _, ext=os.path.splitext(weights.filename or "")
-    if ext.lower() not in ALLOWED_WEIGHT_EXTS:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Unsupported file type '{ext}'. Allowed: {', '.join(ALLOWED_WEIGHT_EXTS)}",
-        )
+    try:
+        _, ext=os.path.splitext(weights.filename or "")
+        if ext.lower() not in ALLOWED_WEIGHT_EXTS:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unsupported file type '{ext}'. Allowed: {', '.join(ALLOWED_WEIGHT_EXTS)}",
+            )
 
-    arch_name=await _resolve_arch_name(base_model_id)
+        arch_name=await _resolve_arch_name(base_model_id)
 
-    file_bytes=await weights.read()
-    cid=await upload_file_to_pinata(file_bytes, weights.filename or "weights")
-    gateway_url = get_gateway_url(cid)
+        file_bytes=await weights.read()
+        original_filename=weights.filename or "weights"
+        cid=await upload_file_to_pinata(file_bytes, original_filename)
 
-    models_col=get_models_collection()
-    versions_col=get_versions_collection()
-    users_col=get_users_collection()
-    now=datetime.now(timezone.utc)
+        models_col=get_models_collection()
+        versions_col=get_versions_collection()
+        users_col=get_users_collection()
+        now=datetime.now(timezone.utc)
 
-    model_oid=ObjectId()
-    model_id_str=str(model_oid)
-    owner_id_str=str(current_user.get("_id", current_user.get("clerk_user_id", "")))
-    tag_list=[t.strip() for t in tags.split(",") if t.strip()]
+        model_oid=ObjectId()
+        model_id_str=str(model_oid)
+        owner_id_str=str(current_user.get("_id", current_user.get("clerk_user_id", "")))
+        owner_clerk_user_id=current_user.get("clerk_user_id")
+        tag_list=[t.strip() for t in tags.split(",") if t.strip()]
 
-    model_doc={
-        "_id":              model_oid,
-        "original_model_id": model_id_str,
-        "name":             name,
-        "description":      description,
-        "base_model_id":    base_model_id,
-        "architecture_type": arch_name,
-        "family":           (await get_base_models_collection().find_one({"id": base_model_id}) or {}).get("family", "custom"),
-        "tags":             tag_list,
-        "input_shape":      [],
-        "current_version_cid": cid,
-        "owner_id":         owner_id_str,
-        "is_public":        is_public,
-        "download_count":   0,
-        "created_at":       now,
-        "updated_at":       now,
-    }
-    await models_col.insert_one(model_doc)
+        model_doc={
+            "_id":              model_oid,
+            "original_model_id": model_id_str,
+            "name":             name,
+            "description":      description,
+            "base_model_id":    base_model_id,
+            "architecture_type": arch_name,
+            "family":           (await get_base_models_collection().find_one({"id": base_model_id}) or {}).get("family", "custom"),
+            "tags":             tag_list,
+            "input_shape":      [],
+            "current_version_cid": cid,
+            "current_version_filename": original_filename,
+            "owner_id":         owner_id_str,
+            "owner_clerk_user_id": owner_clerk_user_id,
+            "is_public":        is_public,
+            "download_count":   0,
+            "created_at":       now,
+            "updated_at":       now,
+        }
+        await models_col.insert_one(model_doc)
 
-    version_count=await versions_col.count_documents({"parent_id": model_id_str})
-    version_doc={
-        "parent_id":      model_id_str,
-        "new_cid":        cid,
-        "session_key":    None,
-        "metrics_json":   {},
-        "notes":          f"Initial upload  {weights.filename}",
-        "version_number": version_count + 1,
-        "pinned_by":      owner_id_str,
-        "timestamp":      now,
-    }
-    await versions_col.insert_one(version_doc)
+        version_count=await versions_col.count_documents({"parent_id": model_id_str})
+        version_doc={
+            "parent_id":      model_id_str,
+            "new_cid":        cid,
+            "filename":       original_filename,
+            "session_key":    None,
+            "metrics_json":   {},
+            "notes":          f"Initial upload {original_filename}",
+            "version_number": version_count + 1,
+            "pinned_by":      owner_id_str,
+            "timestamp":      now,
+        }
+        await versions_col.insert_one(version_doc)
 
-    return await _enrich_model(model_doc, users_col)
+        saved_doc=await models_col.find_one({"_id": model_oid})
+        if not saved_doc:
+            raise HTTPException(status_code=500, detail="Model saved, but failed to load it back from the database")
+
+        logger.info("Model publish complete: model_id=%s cid=%s owner_id=%s", model_id_str, cid, owner_id_str)
+        return await _enrich_model(saved_doc, users_col)
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception("Model publish failed after Pinata upload for file=%s", weights.filename)
+        raise HTTPException(status_code=500, detail="Model publish failed. Check backend logs.")
 
 
 
@@ -259,6 +286,51 @@ async def get_model(model_id: str):
     return await _enrich_model(doc, users_col)
 
 
+def _download_filename(doc: dict) -> str:
+    filename=(doc.get("current_version_filename") or "").strip()
+    if filename:
+        return os.path.basename(filename)
+
+    name=(doc.get("name") or "model").strip() or "model"
+    return f"{name}.pth"
+
+
+@router.get("/models/{model_id}/download")
+async def download_model_file(model_id: str):
+    """Stream the latest model weights from Pinata with a browser-download filename."""
+    models_col=get_models_collection()
+    try:
+        oid=ObjectId(model_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid model ID format")
+
+    doc=await models_col.find_one({"_id": oid})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Model not found")
+
+    cid=doc.get("current_version_cid")
+    if not cid:
+        raise HTTPException(status_code=409, detail="This model has no downloadable version yet")
+
+    download_url=get_gateway_url(cid)
+    filename=_download_filename(doc)
+    now=datetime.now(timezone.utc)
+    await models_col.update_one(
+        {"_id": oid},
+        {"$inc": {"download_count": 1}, "$set": {"updated_at": now}},
+    )
+
+    async def iter_download():
+        async with httpx.AsyncClient(timeout=120.0, follow_redirects=True) as client:
+            async with client.stream("GET", download_url) as response:
+                response.raise_for_status()
+                async for chunk in response.aiter_bytes():
+                    yield chunk
+
+    headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+    return StreamingResponse(iter_download(), media_type="application/octet-stream", headers=headers)
+
+
 
 @router.delete("/models/{model_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_model(
@@ -274,6 +346,7 @@ async def delete_model(
     if not doc:
         raise HTTPException(status_code=404, detail="Model not found")
     owner_id_str=str(current_user.get("_id", current_user.get("clerk_user_id", "")))
-    if doc["owner_id"]!=owner_id_str:
+    owner_clerk_user_id=current_user.get("clerk_user_id")
+    if doc["owner_id"]!=owner_id_str and doc.get("owner_clerk_user_id")!=owner_clerk_user_id:
         raise HTTPException(status_code=403, detail="Not the model owner")
     await models_col.delete_one({"_id": oid})

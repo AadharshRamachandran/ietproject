@@ -42,6 +42,7 @@ def _serialize_version(doc: dict) -> VersionOut:
         parent_id=doc["parent_id"],
         new_cid=cid,
         pinata_gateway_url=get_gateway_url(cid),
+        filename=doc.get("filename"),
         session_key=doc.get("session_key"),
         metrics_json=doc.get("metrics_json", {}),
         notes=doc.get("notes", ""),
@@ -89,9 +90,10 @@ async def upload_version(
     existing_count=await versions_col.count_documents({"parent_id": model_id})
 
     file_bytes=await weights_file.read()
+    original_filename=weights_file.filename or f"weights_v{existing_count + 1}.bin"
     cid=await upload_file_to_pinata(
         file_bytes,
-        filename=weights_file.filename or f"weights_v{existing_count + 1}.bin",
+        filename=original_filename,
         metadata={"model_id": model_id, "version": str(existing_count + 1)},
     )
 
@@ -99,6 +101,7 @@ async def upload_version(
     version_doc={
         "parent_id": model_id,
         "new_cid": cid,
+        "filename": original_filename,
         "session_key": session_key,
         "metrics_json": metrics,
         "notes": notes,
@@ -112,7 +115,7 @@ async def upload_version(
 
     await models_col.update_one(
         {"_id": ObjectId(model_id)},
-        {"$set": {"current_version_cid": cid, "updated_at": now}},
+        {"$set": {"current_version_cid": cid, "current_version_filename": original_filename, "updated_at": now}},
     )
 
     return _serialize_version(version_doc)

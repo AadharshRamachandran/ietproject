@@ -1,21 +1,65 @@
 ﻿import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { modelsApi, versionsApi } from '../api/client.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
-import { ArrowLeft, ExternalLink, GitBranch, Upload, Cpu, Download } from 'lucide-react';
+import { ArrowLeft, ExternalLink, GitBranch, Upload, Cpu, Download, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 
 export default function ModelDetail() {
     const { id }=useParams();
+    const navigate=useNavigate();
     const { isAuthenticated, user }=useAuth();
     const [model, setModel]=useState(null);
     const [versions, setVersions]=useState([]);
     const [loading, setLoading]=useState(true);
     const [uploading, setUploading]=useState(false);
+    const [deleting, setDeleting]=useState(false);
     const [file, setFile]=useState(null);
     const [metrics, setMetrics]=useState('{"accuracy": 0.95}');
     const [notes, setNotes]=useState('');
+
+    const handleDownloadLatest=async () => {
+        if (!model?.id) return;
+        try {
+            const link=document.createElement('a');
+            link.href=modelsApi.downloadUrl(model.id);
+            link.rel='noopener noreferrer';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setModel((prev) => prev ? ({ ...prev, download_count: (prev.download_count || 0) + 1 }) : prev);
+            toast.success('Download started.');
+        } catch (err) {
+            toast.error(err.response?.data?.detail || 'Failed to start download.');
+        }
+    };
+
+    const isOwner=Boolean(
+        user && model && (
+            (user.id && model.owner_clerk_user_id && user.id=== model.owner_clerk_user_id)
+            || (user.id && model.owner_id && user.id=== model.owner_id)
+            || (user.username && model.owner_username && user.username=== model.owner_username)
+        )
+    );
+
+    const handleDeleteModel=async () => {
+        if (!model?.id || deleting) return;
+        const ok=window.confirm(`Delete model "${model.name}"? This action cannot be undone.`);
+        if (!ok) return;
+
+        setDeleting(true);
+        try {
+            await modelsApi.delete(model.id);
+            toast.success('Model deleted successfully.');
+            navigate('/marketplace');
+        } catch (err) {
+            toast.error(err.response?.data?.detail || 'Failed to delete model.');
+        } finally {
+            setDeleting(false);
+        }
+    };
 
     useEffect(() => {
         const load=async () => {
@@ -90,7 +134,23 @@ export default function ModelDetail() {
                             <h1 style={{ fontSize: 'clamp(1.5rem, 4vw, 2.2rem)', marginBottom: 8 }}>{model.name}</h1>
                             <p style={{ fontSize: '0.9rem', maxWidth: 600 }}>{model.description}</p>
                         </div>
-                        <div style={{ display: 'flex', gap: 12 }}>
+                        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+                            {model.current_version_cid && (
+                                <button type="button" className="btn btn-primary" onClick={handleDownloadLatest}>
+                                    <Download size={14} /> Download Latest
+                                </button>
+                            )}
+                            {isOwner && (
+                                <button
+                                    type="button"
+                                    className="btn btn-danger"
+                                    onClick={handleDeleteModel}
+                                    disabled={deleting}
+                                >
+                                    {deleting ? <span className="spinner" /> : <Trash2 size={14} />}
+                                    {deleting ? 'Deleting...' : 'Delete Model'}
+                                </button>
+                            )}
                             <div style={{ textAlign: 'center', padding: '12px 20px', background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
                                 <div style={{ fontWeight: 700, fontSize: '1.2rem', color: 'var(--color-primary)' }}>{versions.length}</div>
                                 <div style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Versions</div>

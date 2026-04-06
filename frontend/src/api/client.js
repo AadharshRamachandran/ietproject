@@ -52,6 +52,8 @@ api.interceptors.response.use(
 
 export default api;
 
+export const getApiBaseUrl=() => API_BASE_URL;
+
 export const authApi={
     me: () => api.get('/auth/me'),
     sync: () => api.post('/auth/sync'),
@@ -66,6 +68,7 @@ export const modelsApi={
     list: (params) => api.get('/models', { params }),
     get: (id) => api.get(`/models/${id}`),
     delete: (id) => api.delete(`/models/${id}`),
+    downloadUrl: (id) => `${API_BASE_URL}/models/${id}/download`,
     publish: (formData) => api.post('/models/publish', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
     }),
