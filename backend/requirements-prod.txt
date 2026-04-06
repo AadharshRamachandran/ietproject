@@ -32,10 +32,9 @@ torchvision==0.18.1; python_version < "3.13"
 torch==2.9.1; python_version >= "3.13"
 torchvision==0.24.1; python_version >= "3.13"
 transformers==4.40.0
-librosa==0.10.1; python_version < "3.13"
-librosa==0.11.0; python_version >= "3.13"
-scikit-learn==1.4.2; python_version < "3.13"
-scikit-learn==1.7.0; python_version >= "3.13"
+# NOTE: Excluded from prod deploy because Render Python 3.14 can trigger
+# SciPy source builds (needs Fortran toolchain unavailable on native runtime).
+# Keep these in dev/local requirements if needed for offline experimentation.
 
 # --- Data Processing ---
 pillow==10.3.0
