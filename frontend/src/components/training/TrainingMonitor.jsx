@@ -1,4 +1,4 @@
-import useSSE from '../../hooks/useSSE.js';
+﻿import useSSE from '../../hooks/useSSE.js';
 import { sessionsApi } from '../../api/client.js';
 import { Radio, AlertTriangle, CheckCircle2, Activity, Users, Zap, Wifi, WifiOff } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -59,7 +59,7 @@ const EVENT_LABEL={
     round_end: 'Round Complete',
     round_no_updates: 'No Client Updates',
     clients_validated: 'Clients Validated',
-    client_ousted: 'âš  Client Ousted',
+    client_ousted: '    Client Ousted',
     evaluation: 'Evaluation',
     session_closed: 'Session Closed',
 };
@@ -163,7 +163,7 @@ export default function TrainingMonitor({ enabled=true, sessionKey=null }) {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 12px', borderRadius: 'var(--radius-full)', background: connected ? 'rgba(0,229,160,0.1)' : (sessionInfo ? 'rgba(255,181,71,0.1)' : 'rgba(255,255,255,0.04)'), border: `1px solid ${connected ? 'rgba(0,229,160,0.25)' : (sessionInfo ? 'rgba(255,181,71,0.25)' : 'var(--color-border)')}` }}>
                         {connected ? <Wifi size={12} color="var(--color-success)" /> : <WifiOff size={12} color={sessionInfo ? 'var(--color-warning)' : 'var(--color-text-muted)'} />}
                         <span style={{ fontSize: '0.68rem', fontWeight: 700, color: connected ? 'var(--color-success)' : (sessionInfo ? 'var(--color-warning)' : 'var(--color-text-muted)'), textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                            {connected ? 'Live SSE' : sessionInfo ? 'Polling Mode' : (error ? 'Reconnectingâ€¦' : 'Disconnected')}
+                            {connected ? 'Live SSE' : sessionInfo ? 'Polling Mode' : (error ? 'Reconnecting   ' : 'Disconnected')}
                         </span>
                     </div>
                 </div>
@@ -180,7 +180,7 @@ export default function TrainingMonitor({ enabled=true, sessionKey=null }) {
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <span>{member}</span>
                                     <span style={{ color: 'var(--color-text-muted)' }}>
-                                        {progress?.status || 'unknown'} Â· rounds: {progress?.rounds_completed ?? 0}/{totalRounds || '?'}
+                                        {progress?.status || 'unknown'}    rounds: {progress?.rounds_completed ?? 0}/{totalRounds || '?'}
                                     </span>
                                 </div>
                                 <div style={{ height: 6, borderRadius: 999, background: 'rgba(255,255,255,0.07)', overflow: 'hidden' }}>
@@ -237,7 +237,7 @@ export default function TrainingMonitor({ enabled=true, sessionKey=null }) {
                         { label: 'Events', value: totalEvents, color: 'var(--color-secondary)' },
                         {
                             label: 'Status',
-                            value: sessionInfo?.status || (isOusted ? 'âš  Ouster' : 'âœ“ OK'),
+                            value: sessionInfo?.status || (isOusted ? '    Ouster' : '    OK'),
                             color: sessionInfo?.status=== 'Training' ? 'var(--color-warning)' : (isOusted ? 'var(--color-danger)' : 'var(--color-success)')
                         },
                     ].map(({ label, value, color }) => (
@@ -254,11 +254,11 @@ export default function TrainingMonitor({ enabled=true, sessionKey=null }) {
                 {(totalEvents=== 0) ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '32px 0', gap: 10, color: 'var(--color-text-muted)' }}>
                         <Radio size={28} style={{ opacity: 0.3 }} />
-                        <p style={{ fontSize: '0.85rem' }}>Waiting for FL eventsâ€¦</p>
+                        <p style={{ fontSize: '0.85rem' }}>Waiting for FL events   </p>
                         {sessionInfo && (
                             <p style={{ fontSize: '0.76rem', opacity: 0.7 }}>
-                                Session status: {sessionInfo.status} Â· Clients: {sessionInfo.connected_clients || 0}/{sessionInfo.min_clients}
-                                {sessionInfo.fl_server_port ? ` Â· FL Port: ${sessionInfo.fl_server_port}` : ''}
+                                Session status: {sessionInfo.status}    Clients: {sessionInfo.connected_clients || 0}/{sessionInfo.min_clients}
+                                {sessionInfo.fl_server_port ? `    FL Port: ${sessionInfo.fl_server_port}` : ''}
                             </p>
                         )}
                         <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>
@@ -300,7 +300,7 @@ export default function TrainingMonitor({ enabled=true, sessionKey=null }) {
                                     </div>
                                     <div className="text-mono" style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', wordBreak: 'break-all', lineHeight: 1.4 }}>
                                         {isOuster
-                                            ? `Client ${data.node_id || '?'} â€” ${data.reason}`
+                                            ? `Client ${data.node_id || '?'}     ${data.reason}`
                                             : data.error
                                                 ? data.error
                                                 : data.message || (data.round ? `Round ${data.round}` : JSON.stringify(data).slice(0, 120))}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { sessionsApi, modelsApi, baseModelsApi } from '../../api/client.js';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import Modal from '../common/Modal.jsx';
@@ -135,13 +135,13 @@ export default function FLMarketplace() {
 
     const getDataFamilyIcon=(family) => {
         const icons={
-            vision: 'ðŸ–¼ï¸',
-            vision_transformer: 'ðŸŽ¯',
-            nlp: 'ðŸ“',
-            audio: 'ðŸŽµ',
-            edge: 'âš¡',
+            vision: '       ',
+            vision_transformer: '    ',
+            nlp: '    ',
+            audio: '    ',
+            edge: '   ',
         };
-        return icons[family] ?? 'ðŸ“Š';
+        return icons[family] ?? '    ';
     };
 
     return (
@@ -329,12 +329,12 @@ export default function FLMarketplace() {
                                 value={createForm.model_id}
                                 onChange={e => setCreateForm(prev => ({ ...prev, model_id: e.target.value }))}
                             >
-                                <option value="">â€” Choose a model â€”</option>
+                                <option value="">    Choose a model    </option>
                                 {baseModels.length>0 && (
                                     <optgroup label="Base Models">
                                         {baseModels.map(m => (
                                             <option key={`base-${m.id}`} value={m.id}>
-                                                {m.name} Â· {m.family}
+                                                {m.name}    {m.family}
                                             </option>
                                         ))}
                                     </optgroup>
@@ -343,7 +343,7 @@ export default function FLMarketplace() {
                                     <optgroup label="Published Models">
                                         {models.map(m => (
                                             <option key={`published-${m.id}`} value={m.id}>
-                                                {m.name} Â· {m.architecture_type}
+                                                {m.name}    {m.architecture_type}
                                             </option>
                                         ))}
                                     </optgroup>
@@ -474,7 +474,7 @@ export default function FLMarketplace() {
                         </div>
                         <div>
                             <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: '4px' }}>Description</p>
-                            <p>{selectedSession.description || 'â€”'}</p>
+                            <p>{selectedSession.description || '   '}</p>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-md)' }}>
                             <div>

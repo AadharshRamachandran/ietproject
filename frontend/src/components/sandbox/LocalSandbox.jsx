@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import useLocalFS from '../../hooks/useLocalFS.js';
 import { FolderOpen, ShieldCheck, Files, Scan, RefreshCw, HardDrive } from 'lucide-react';
 
@@ -63,7 +63,7 @@ export default function LocalSandbox() {
                     <div style={{ textAlign: 'center' }}>
                         <p style={{ fontWeight: 600, marginBottom: 4 }}>Link a local folder</p>
                         <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', maxWidth: 300 }}>
-                            Select your dataset folder. Files are scanned locally â€” nothing is uploaded.
+                            Select your dataset folder. Files are scanned locally     nothing is uploaded.
                         </p>
                     </div>
                     <button className="btn btn-primary" onClick={linkAndScan}>
@@ -78,10 +78,10 @@ export default function LocalSandbox() {
                         <FolderOpen size={18} color="var(--color-primary)" />
                         <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--color-text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                ðŸ“ {folderName}
+                                     {folderName}
                             </div>
                             <div style={{ fontSize: '0.73rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
-                                Linked locally â€” 0 bytes sent to server
+                                Linked locally     0 bytes sent to server
                             </div>
                         </div>
                         <button onClick={reset} style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', cursor: 'pointer', padding: 4 }}>
@@ -114,13 +114,13 @@ export default function LocalSandbox() {
                             <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(0,229,160,0.1)', border: '1px solid rgba(0,229,160,0.2)', padding: '5px 12px', borderRadius: 'var(--radius-full)' }}>
                                 <ShieldCheck size={12} color="var(--color-success)" />
                                 <span className="text-mono" style={{ fontSize: '0.75rem', color: 'var(--color-success)', fontWeight: 600 }}>
-                                    Shape: [{dataShape.join(', ')}] âœ“
+                                    Shape: [{dataShape.join(', ')}]    
                                 </span>
                             </div>
                         )}
                         {shapeError && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--color-danger)' }}>âš  {shapeError}</span>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--color-danger)' }}>    {shapeError}</span>
                                 <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)' }}>
                                     Tip: Ensure your folder has subdirectories for each class, e.g. <code>dataset/class_a/img1.jpg</code>.
                                 </span>
@@ -137,7 +137,7 @@ export default function LocalSandbox() {
                                     <span style={{ color: 'var(--color-text-muted)', flexShrink: 0 }}>{formatBytes(f.size)}</span>
                                 </div>
                             ))}
-                            {files.length>30 && <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', textAlign: 'center', padding: '4px 0' }}>+{files.length - 30} more filesâ€¦</div>}
+                            {files.length>30 && <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', textAlign: 'center', padding: '4px 0' }}>+{files.length - 30} more files   </div>}
                         </div>
                     )}
                 </div>

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import { Download, GitBranch, ExternalLink, Cpu } from 'lucide-react';
 
 const ARCH_COLORS={
@@ -12,7 +12,7 @@ const ARCH_COLORS={
 export default function ModelCard({ model, style={}, className='' }) {
     const archColor=ARCH_COLORS[model.architecture_type] || '#6c63ff';
     const cidShort=model.current_version_cid
-        ? `${model.current_version_cid.slice(0, 8)}â€¦${model.current_version_cid.slice(-4)}`
+        ? `${model.current_version_cid.slice(0, 8)}   ${model.current_version_cid.slice(-4)}`
         : null;
 
     return (

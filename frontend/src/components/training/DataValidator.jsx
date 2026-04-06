@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { CheckCircle, AlertCircle, XCircle, Award, FileUp, BarChart3, Zap } from 'lucide-react';
 import toast from 'react-hot-toast';
 import styles from './DataValidator.module.css';
@@ -10,7 +10,7 @@ export default function DataValidator({ dataFamily='vision', onValidationComplet
 
     const requirements={
         vision: {
-            title: 'ðŸ–¼ï¸ Vision (Image Classification)',
+            title: '        Vision (Image Classification)',
             description: 'Supervised image classification datasets',
             permissible: [
                 'Medical imaging (with consent)',
@@ -28,26 +28,26 @@ export default function DataValidator({ dataFamily='vision', onValidationComplet
             ],
             format: `
 my_dataset/
-â”œâ”€â”€ class_A/
-â”‚   â”œâ”€â”€ image1.jpg
-â”‚   â”œâ”€â”€ image2.png
-â”‚   â””â”€â”€ image3.webp
-â”œâ”€â”€ class_B/
-â”‚   â”œâ”€â”€ image1.jpg
-â”‚   â””â”€â”€ image2.jpg
-â””â”€â”€ class_C/
-    â””â”€â”€ image1.jpg
+          class_A/
+                image1.jpg
+                image2.png
+                image3.webp
+          class_B/
+                image1.jpg
+                image2.jpg
+          class_C/
+              image1.jpg
             `.trim(),
             specs: [
-                'âœ“ Supported formats: JPG, PNG, WebP, BMP, TIFF',
-                'âœ“ Recommended size: 224Ã—224 to 512Ã—512 pixels',
-                'âœ“ Minimum ~50 images per class',
-                'âœ“ Balanced classes (avoid >2:1 ratio)',
-                'âš  Large images increase memory usage',
+                '    Supported formats: JPG, PNG, WebP, BMP, TIFF',
+                '    Recommended size: 224  224 to 512  512 pixels',
+                '    Minimum ~50 images per class',
+                '    Balanced classes (avoid >2:1 ratio)',
+                '    Large images increase memory usage',
             ],
         },
         vision_transformer: {
-            title: 'ðŸŽ¯ Vision Transformer',
+            title: '     Vision Transformer',
             description: 'Transformer-based image understanding',
             permissible: [
                 'Medical scans',
@@ -63,21 +63,21 @@ my_dataset/
             ],
             format: `
 my_dataset/
-â”œâ”€â”€ class_A/
-â”‚   â””â”€â”€ image1.jpg
-â””â”€â”€ class_B/
-    â””â”€â”€ image1.jpg
+          class_A/
+                image1.jpg
+          class_B/
+              image1.jpg
             `.trim(),
             specs: [
-                'âœ“ Format: ImageFolder (same as Vision)',
-                'âœ“ Preferred size: 224Ã—224 (16Ã—16 patches)',
-                'âœ“ Square aspect ratio works best',
-                'âœ“ Minimum ~100 images per class',
-                'âš  Transformers need more data than CNNs',
+                '    Format: ImageFolder (same as Vision)',
+                '    Preferred size: 224  224 (16  16 patches)',
+                '    Square aspect ratio works best',
+                '    Minimum ~100 images per class',
+                '    Transformers need more data than CNNs',
             ],
         },
         nlp: {
-            title: 'ðŸ“ NLP (Text Classification)',
+            title: '     NLP (Text Classification)',
             description: 'Text classification and sentiment analysis',
             permissible: [
                 'Customer reviews',
@@ -102,16 +102,16 @@ text,label
 "Terrible.",negative
             `.trim(),
             specs: [
-                'âœ“ Format: CSV with "text" and "label" columns',
-                'âœ“ UTF-8 encoding required',
-                'âœ“ Max 512 tokens per sample',
-                'âœ“ Minimum ~100 samples per class',
-                'âš  Remove duplicates and spam',
-                'âš  Balance classes for best results',
+                '    Format: CSV with "text" and "label" columns',
+                '    UTF-8 encoding required',
+                '    Max 512 tokens per sample',
+                '    Minimum ~100 samples per class',
+                '    Remove duplicates and spam',
+                '    Balance classes for best results',
             ],
         },
         audio: {
-            title: 'ðŸŽµ Audio (Audio Classification)',
+            title: '     Audio (Audio Classification)',
             description: 'Audio classification and sound recognition',
             permissible: [
                 'Environmental sounds',
@@ -130,23 +130,23 @@ text,label
             ],
             format: `
 my_dataset/
-â”œâ”€â”€ class_A/
-â”‚   â”œâ”€â”€ sound1.wav
-â”‚   â””â”€â”€ sound2.wav
-â””â”€â”€ class_B/
-    â””â”€â”€ sound1.wav
+          class_A/
+                sound1.wav
+                sound2.wav
+          class_B/
+              sound1.wav
             `.trim(),
             specs: [
-                'âœ“ Format: WAV (preferred), FLAC, MP3',
-                'âœ“ Sample rate: 16,000 Hz (mono)',
-                'âœ“ Duration: 1â€“30 seconds per clip',
-                'âœ“ Minimum ~20 clips per class',
-                'âš  Normalize audio levels',
-                'âš  Remove background noise if possible',
+                '    Format: WAV (preferred), FLAC, MP3',
+                '    Sample rate: 16,000 Hz (mono)',
+                '    Duration: 1   30 seconds per clip',
+                '    Minimum ~20 clips per class',
+                '    Normalize audio levels',
+                '    Remove background noise if possible',
             ],
         },
         edge: {
-            title: 'âš¡ Edge (IoT/Minimal Footprint)',
+            title: '    Edge (IoT/Minimal Footprint)',
             description: 'Lightweight models for edge devices',
             permissible: [
                 'Sensor data (temperature, humidity, etc.)',
@@ -167,12 +167,12 @@ timestamp,sensor_A,sensor_B,label
 2024-01-01 10:01,25.4,60.1,normal
             `.trim(),
             specs: [
-                'âœ“ Format: CSV or JSON time-series',
-                'âœ“ Minimal preprocessing required',
-                'âœ“ Works with small models',
-                'âœ“ Low latency inference',
-                'âš  Handle missing values',
-                'âš  Normalize numerical ranges',
+                '    Format: CSV or JSON time-series',
+                '    Minimal preprocessing required',
+                '    Works with small models',
+                '    Low latency inference',
+                '    Handle missing values',
+                '    Normalize numerical ranges',
             ],
         },
     };
@@ -253,7 +253,7 @@ timestamp,sensor_A,sensor_B,label
                                     <div style={{ marginBottom: 'var(--space-xl)' }}>
                                         <h4 style={{ color: 'var(--color-success)', marginBottom: 'var(--space-md)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                             <CheckCircle size={18} />
-                                            âœ“ Permissible Data
+                                                Permissible Data
                                         </h4>
                                         <ul style={{ listStyle: 'none', padding: 0 }}>
                                             {currentRequirements.permissible.map((item, i) => (
@@ -268,7 +268,7 @@ timestamp,sensor_A,sensor_B,label
                                     <div>
                                         <h4 style={{ color: 'var(--color-danger)', marginBottom: 'var(--space-md)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                             <XCircle size={18} />
-                                            âœ— NOT Permissible Data
+                                                NOT Permissible Data
                                         </h4>
                                         <ul style={{ listStyle: 'none', padding: 0 }}>
                                             {currentRequirements.notPermissible.map((item, i) => (
@@ -296,7 +296,7 @@ timestamp,sensor_A,sensor_B,label
                                                     style={{
                                                         padding: '8px 0',
                                                         fontSize: '0.9rem',
-                                                        color: spec.startsWith('âœ“') ? 'var(--color-success)' : spec.startsWith('âš ') ? 'var(--color-warning)' : 'var(--color-text-secondary)',
+                                                        color: spec.startsWith('   ') ? 'var(--color-success)' : spec.startsWith('   ') ? 'var(--color-warning)' : 'var(--color-text-secondary)',
                                                         borderBottom: '1px solid var(--color-border)',
                                                     }}
                                                 >
@@ -392,7 +392,7 @@ timestamp,sensor_A,sensor_B,label
                                         )}
                                         <div>
                                             <h3 style={{ color: validationResult.status=== 'valid' ? 'var(--color-success)' : 'var(--color-warning)' }}>
-                                                {validationResult.status=== 'valid' ? 'âœ“ Ready for FL' : 'âš  Needs Adjustment'}
+                                                {validationResult.status=== 'valid' ? '    Ready for FL' : '    Needs Adjustment'}
                                             </h3>
                                             <p style={{ color: 'var(--color-text-secondary)' }}>
                                                 Dataset is {validationResult.status=== 'valid' ? 'ready' : 'not yet ready'} for federated learning

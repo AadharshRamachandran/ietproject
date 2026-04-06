@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { SignedIn, SignedOut, SignUpButton } from '@clerk/clerk-react';
 import LocalSandbox from '../components/sandbox/LocalSandbox.jsx';
 import SessionManager from '../components/training/SessionManager.jsx';
@@ -15,7 +15,7 @@ export default function Dashboard() {
 
     return (
         <>
-            {/* â”€â”€ Unauthenticated gate â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/*        Unauthenticated gate                                                                                                              */}
             <SignedOut>
                 <div className="flex-center flex-col" style={{ minHeight: '80vh', paddingTop: 68, gap: 20, textAlign: 'center', padding: '80px var(--space-xl)' }}>
                     <div style={{ width: 72, height: 72, borderRadius: 'var(--radius-xl)', background: 'rgba(108,99,255,0.12)', border: '1.5px solid rgba(108,99,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -33,7 +33,7 @@ export default function Dashboard() {
                 </div>
             </SignedOut>
 
-            {/* â”€â”€ Authenticated content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/*        Authenticated content                                                                                                           */}
             <SignedIn>
                 <main style={{ paddingTop: 68 }}>
                     {/* Page header */}
@@ -45,7 +45,7 @@ export default function Dashboard() {
                                 </div>
                                 <div>
                                     <h1 style={{ fontSize: '1.8rem', marginBottom: 2 }}>Training Dashboard</h1>
-                                    <p style={{ fontSize: '0.85rem' }}>Link local data, join sessions, and monitor federated training â€” live.</p>
+                                    <p style={{ fontSize: '0.85rem' }}>Link local data, join sessions, and monitor federated training     live.</p>
                                 </div>
                             </div>
 

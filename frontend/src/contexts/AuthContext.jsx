@@ -1,4 +1,4 @@
-
+﻿
 import { createContext, useContext, useEffect, useCallback, useRef } from 'react';
 import { useUser, useAuth as useClerkAuth } from '@clerk/clerk-react';
 import api from '../api/client.js';

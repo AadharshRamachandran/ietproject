@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { modelsApi, baseModelsApi } from '../api/client.js';
 import { ModelCard, PublishModelModal } from '../components/marketplace/ModelList.jsx';
@@ -66,7 +66,7 @@ export default function Marketplace() {
 
     return (
         <main style={{ paddingTop: 68 }}>
-            {/* â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/*        Header                                                                                                                                            */}
             <section style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(108,99,255,0.12) 0%, transparent 70%)', padding: '40px 0 28px', borderBottom: '1px solid var(--color-border)' }}>
                 <div className="container">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
@@ -82,7 +82,7 @@ export default function Marketplace() {
                             </div>
                         </div>
 
-                        {/* Publish button â€” requires auth */}
+                        {/* Publish button     requires auth */}
                         <SignedIn>
                             <button className="btn btn-primary" onClick={() => setPublishOpen(true)} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                 <PlusCircle size={16} /> Publish Model
@@ -102,7 +102,7 @@ export default function Marketplace() {
                         <Search size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }} />
                         <input
                             type="text"
-                            placeholder="Search models, tags, descriptionsâ€¦"
+                            placeholder="Search models, tags, descriptions   "
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             style={{ width: '100%', padding: '10px 14px 10px 40px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 'var(--radius-md)', color: 'inherit', fontSize: '0.88rem', boxSizing: 'border-box' }}
@@ -111,7 +111,7 @@ export default function Marketplace() {
                 </div>
             </section>
 
-            {/* â”€â”€ Family filter tabs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/*        Family filter tabs                                                                                                        */}
             <section style={{ borderBottom: '1px solid var(--color-border)', background: 'rgba(255,255,255,0.01)' }}>
                 <div className="container">
                     <div style={{ display: 'flex', overflowX: 'auto', gap: 4, padding: '12px 0', scrollbarWidth: 'none' }}>
@@ -135,13 +135,13 @@ export default function Marketplace() {
                 </div>
             </section>
 
-            {/* â”€â”€ Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/*        Grid                                                                                                                                                  */}
             <section className="section">
                 <div className="container">
                     {loading && models.length=== 0 ? (
                         <div className="flex-center" style={{ minHeight: 300, flexDirection: 'column', gap: 12 }}>
                             <Loader size={28} style={{ animation: 'spin 1s linear infinite' }} />
-                            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>Loading modelsâ€¦</p>
+                            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>Loading models   </p>
                         </div>
                     ) : models.length=== 0 ? (
                         <div className="flex-center" style={{ minHeight: 300, flexDirection: 'column', gap: 12, textAlign: 'center' }}>

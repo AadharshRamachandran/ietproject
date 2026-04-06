@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import { Brain } from 'lucide-react';
 
 export default function Footer() {
@@ -73,7 +73,7 @@ export default function Footer() {
 
                 <div style={{ marginTop: 36, paddingTop: 20, borderTop: '1px solid var(--color-border)', textAlign: 'center' }}>
                     <p style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
-                        ModelMesh Â· Built with Federated Learning ðŸŒ¸ &amp; IPFS ðŸ“¦
+                        ModelMesh    Built with Federated Learning      &amp; IPFS     
                     </p>
                 </div>
             </div>

@@ -1,12 +1,12 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import { Brain, ShieldCheck, GitBranch, Network, ArrowRight, Zap, Globe } from 'lucide-react';
 
 const FEATURES=[
-    { icon: <ShieldCheck size={22} />, color: '#00e5a0', title: 'Zero Data Upload', desc: 'Your dataset never leaves your machine. Only model gradients are aggregated â€” privacy by design.' },
-    { icon: <GitBranch size={22} />, color: '#6c63ff', title: 'Immutable Versioning', desc: 'Every training session creates an IPFS-pinned CID â€” a permanent, verifiable record of model evolution.' },
+    { icon: <ShieldCheck size={22} />, color: '#00e5a0', title: 'Zero Data Upload', desc: 'Your dataset never leaves your machine. Only model gradients are aggregated     privacy by design.' },
+    { icon: <GitBranch size={22} />, color: '#6c63ff', title: 'Immutable Versioning', desc: 'Every training session creates an IPFS-pinned CID     a permanent, verifiable record of model evolution.' },
     { icon: <Network size={22} />, color: '#00d4ff', title: 'Federated Learning', desc: 'Flower-powered FL with shape validation. Mismatched clients are automatically ousted.' },
-    { icon: <Globe size={22} />, color: '#ffb547', title: 'Open Marketplace', desc: 'Browse, download, and fine-tune 35+ model architectures â€” stored permanently on IPFS.' },
-    { icon: <Brain size={22} />, color: '#ff6b9d', title: '35+ Architectures', desc: 'Vision CNNs, Vision Transformers, NLP, Audio â€” all seeded and ready for federated fine-tuning.' },
+    { icon: <Globe size={22} />, color: '#ffb547', title: 'Open Marketplace', desc: 'Browse, download, and fine-tune 35+ model architectures     stored permanently on IPFS.' },
+    { icon: <Brain size={22} />, color: '#ff6b9d', title: '35+ Architectures', desc: 'Vision CNNs, Vision Transformers, NLP, Audio     all seeded and ready for federated fine-tuning.' },
     { icon: <Zap size={22} />, color: '#6c63ff', title: 'Real-time Events', desc: 'SSE-powered live dashboard shows round progress, client alerts, and completion events as they happen.' },
 ];
 
@@ -20,7 +20,7 @@ const STATS=[
 export default function Home() {
     return (
         <main style={{ paddingTop: 68 }}>
-            {/* â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/*        Hero                                                                                                                                            */}
             <section style={{
                 minHeight: '92vh',
                 background: 'var(--gradient-hero)',
@@ -52,7 +52,7 @@ export default function Home() {
                     <div className="animate-fadeInUp" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '7px 18px', borderRadius: 'var(--radius-full)', background: 'rgba(108,99,255,0.12)', border: '1px solid rgba(108,99,255,0.3)', marginBottom: 28 }}>
                         <div style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--color-success)', animation: 'pulseGlow 2s infinite' }} />
                         <span style={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.06em', color: 'var(--color-primary)' }}>
-                            DECENTRALIZED Â· FEDERATED Â· OPEN
+                            DECENTRALIZED    FEDERATED    OPEN
                         </span>
                     </div>
 
@@ -63,7 +63,7 @@ export default function Home() {
 
                     <p className="animate-fadeInUp delay-200" style={{ fontSize: 'clamp(1rem, 2vw, 1.2rem)', lineHeight: 1.7, marginBottom: 40, maxWidth: 580, margin: '0 auto 40px' }}>
                         ModelMesh lets you publish, discover, and collaboratively fine-tune machine learning models
-                        â€” without ever uploading your raw training data to a server.
+                            without ever uploading your raw training data to a server.
                     </p>
 
                     <div className="animate-fadeInUp delay-300" style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -77,7 +77,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* â”€â”€ Stats Bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/*        Stats Bar                                                                                                                             */}
             <section style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)' }}>
                 <div className="container" style={{ padding: '28px var(--space-xl)' }}>
                     <div className="grid-4">
@@ -93,7 +93,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* â”€â”€ Features â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/*        Features                                                                                                                                */}
             <section className="section">
                 <div className="container">
                     <div className="text-center" style={{ marginBottom: 48 }}>
@@ -116,7 +116,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* â”€â”€ CTA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/*        CTA                                                                                                                                               */}
             <section style={{ padding: 'var(--space-2xl) 0', background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(108,99,255,0.12) 0%, transparent 70%)' }}>
                 <div className="container text-center">
                     <h2 style={{ marginBottom: 16 }}>Ready to train <span className="text-gradient">without limits?</span></h2>

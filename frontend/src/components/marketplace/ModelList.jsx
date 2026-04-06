@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { modelsApi, baseModelsApi } from '../../api/client.js';
 import {
     Upload, X, ChevronDown, Tag, Info,
@@ -71,7 +71,7 @@ export function PublishModelModal({ isOpen, onClose, onPublished }) {
             clearInterval(timer);
             setProgress(100);
             setResult(data);
-            toast.success(`âœ… "${data.name}" published to IPFS!`);
+            toast.success(`    "${data.name}" published to IPFS!`);
             onPublished?.(data);
         } catch (err) {
             setError(err?.response?.data?.detail || err.message || 'Upload failed');
@@ -153,7 +153,7 @@ export function PublishModelModal({ isOpen, onClose, onPublished }) {
                                     <Upload size={28} color="var(--color-text-muted)" />
                                     <p style={{ marginTop: 8, fontWeight: 500 }}>Drag & drop weights here</p>
                                     <p style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
-                                        .pt Â· .pth Â· .onnx Â· .h5 Â· .bin Â· .safetensors
+                                        .pt    .pth    .onnx    .h5    .bin    .safetensors
                                     </p>
                                 </>
                             )}
@@ -168,7 +168,7 @@ export function PublishModelModal({ isOpen, onClose, onPublished }) {
                                 onChange={e => setForm(f => ({ ...f, base_model_id: e.target.value }))}
                                 style={{ width: '100%', padding: '10px 14px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, color: 'inherit', fontSize: '0.88rem' }}
                             >
-                                <option value="">â€” Select base model â€”</option>
+                                <option value="">    Select base model    </option>
                                 {Object.entries(grouped).map(([family, models]) => (
                                     <optgroup key={family} label={FAMILY_META[family]?.label || family}>
                                         {models.map(m => (
@@ -191,7 +191,7 @@ export function PublishModelModal({ isOpen, onClose, onPublished }) {
                         <div>
                             <label style={{ fontSize: '0.82rem', fontWeight: 600, marginBottom: 6, display: 'block' }}>Description</label>
                             <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                                rows={3} placeholder="What dataset, training setup, accuracy achievedâ€¦"
+                                rows={3} placeholder="What dataset, training setup, accuracy achieved   "
                                 style={{ width: '100%', padding: '10px 14px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, color: 'inherit', fontSize: '0.88rem', resize: 'vertical', boxSizing: 'border-box' }} />
                         </div>
 
@@ -229,7 +229,7 @@ export function PublishModelModal({ isOpen, onClose, onPublished }) {
                         )}
 
                         <button type="submit" className="btn btn-primary" disabled={uploading} style={{ marginTop: 4 }}>
-                            {uploading ? <><Loader size={15} style={{ animation: 'spin 1s linear infinite' }} /> Uploading to IPFSâ€¦</> : <><Upload size={15} /> Publish Model</>}
+                            {uploading ? <><Loader size={15} style={{ animation: 'spin 1s linear infinite' }} /> Uploading to IPFS   </> : <><Upload size={15} /> Publish Model</>}
                         </button>
                     </form>
                 )}
@@ -255,7 +255,7 @@ export function ModelCard({ model }) {
                         <span style={{ fontSize: '0.65rem', fontWeight: 600, color: '#ffc107' }}>BASE ARCHITECTURE</span>
                     </div>
                 )}
-                {!model.is_base_model && <span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)' }}>â¬‡ {model.download_count}</span>}
+                {!model.is_base_model && <span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)' }}>    {model.download_count}</span>}
             </div>
 
             <div>

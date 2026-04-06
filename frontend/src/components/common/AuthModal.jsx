@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import Modal from './Modal.jsx';
 import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
@@ -106,7 +106,7 @@ export default function AuthModal({ isOpen, onClose, initialMode='login' }) {
                             type={showPwd ? 'text' : 'password'}
                             className="form-input"
                             style={{ paddingLeft: 40, paddingRight: 44 }}
-                            placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                            placeholder="                        "
                             value={form.password}
                             onChange={set('password')}
                             required

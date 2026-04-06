@@ -38,7 +38,25 @@ class Settings(BaseSettings):
 
     @property
     def cors_origins_list(self) -> List[str]:
-        return [o.strip() for o in self.cors_origins.split(",")]
+        """Return normalized CORS origins and always include FRONTEND_URL if set."""
+        parsed=[]
+
+        if self.cors_origins:
+            for origin in self.cors_origins.split(","):
+                o=origin.strip().rstrip("/")
+                if o:
+                    parsed.append(o)
+
+        if self.frontend_url:
+            frontend=self.frontend_url.strip().rstrip("/")
+            if frontend and frontend not in parsed:
+                parsed.append(frontend)
+
+        # Ensure development fallback if nothing is configured
+        if not parsed:
+            parsed=["http://localhost:5173"]
+
+        return parsed
 
     @property
     def is_production(self) -> bool:

@@ -54,6 +54,8 @@ allow_credentials = True
 if not settings.is_production and "localhost" in cors_origins[0]:
     cors_origins = cors_origins + ["*"]
 
+logger.info(f"Effective CORS allow_origins: {cors_origins}")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,

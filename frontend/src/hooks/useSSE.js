@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+﻿import { useEffect, useRef, useState, useCallback } from 'react';
 
 export default function useSSE(url, enabled=true) {
     const [events, setEvents]=useState([]);
@@ -27,7 +27,7 @@ export default function useSSE(url, enabled=true) {
         if (connectInFlight.current) return;
         if (typeof navigator!=='undefined' && !navigator.onLine) {
             setConnected(false);
-            setError('Offline â€” waiting for network...');
+            setError('Offline     waiting for network...');
             return;
         }
         if (typeof document!=='undefined' && document.visibilityState=== 'hidden') {
@@ -96,7 +96,7 @@ export default function useSSE(url, enabled=true) {
             const delay=Math.min(maxDelay, baseDelay*Math.pow(2, attempt));
 
             reconnectAttempts.current=Math.min(attempt + 1, 10);
-            setError(`Connection lost â€” retrying in ${Math.ceil(delay/1000)}s...`);
+            setError(`Connection lost     retrying in ${Math.ceil(delay/1000)}s...`);
 
             cleanupConnection();
             reconnectTimer.current=setTimeout(() => {

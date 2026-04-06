@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import Modal from '../common/Modal.jsx';
 import { sessionsApi } from '../../api/client.js';
 import { useSandbox } from '../../contexts/SandboxContext.jsx';
@@ -128,7 +128,7 @@ export default function JoinSessionModal({ isOpen, onClose, onJoin }) {
                                 </span>
                             </div>
                             <div style={{ fontSize: '0.76rem', color: 'var(--color-text-muted)', marginBottom: 8 }}>
-                                Lead: {session.lead_username} Â· Shape: [{session.required_input_shape}] Â· {session.max_rounds} rounds
+                                Lead: {session.lead_username}    Shape: [{session.required_input_shape}]    {session.max_rounds} rounds
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, fontSize: '0.76rem', color: shapeOk ? 'var(--color-success)' : 'var(--color-danger)' }}>
                                 {shapeOk ? <CheckCircle2 size={12} /> : <AlertCircle size={12} />}

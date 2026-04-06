@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { sessionsApi } from '../../api/client.js';
 import { Activity, Radio, Users } from 'lucide-react';
 

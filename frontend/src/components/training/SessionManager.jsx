@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { sessionsApi, modelsApi, baseModelsApi } from '../../api/client.js';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { useSandbox } from '../../contexts/SandboxContext.jsx';
@@ -11,20 +11,20 @@ const DATASET_GUIDES={
     vision: {
         title: 'Image Classification Dataset',
         format: 'ImageFolder (one subfolder per class)',
-        example: `my_dataset/\n  â”œâ”€â”€ class_A/\n  â”‚     â”œâ”€â”€ img1.jpg\n  â”‚     â””â”€â”€ img2.png\n  â””â”€â”€ class_B/\n        â””â”€â”€ img1.jpg`,
+        example: `my_dataset/\n            class_A/\n                    img1.jpg\n                    img2.png\n            class_B/\n                  img1.jpg`,
         notes: [
             'Supported: .jpg, .jpeg, .png, .bmp, .webp',
-            'Resize images to match input shape (e.g. 224Ã—224)',
+            'Resize images to match input shape (e.g. 224  224)',
             'Minimum ~50 images per class recommended',
         ],
     },
     vision_transformer: {
         title: 'Image Dataset (Patch-based)',
         format: 'ImageFolder (one subfolder per class)',
-        example: `my_dataset/\n  â”œâ”€â”€ class_A/\n  â”‚     â””â”€â”€ img1.jpg\n  â””â”€â”€ class_B/\n        â””â”€â”€ img1.jpg`,
+        example: `my_dataset/\n            class_A/\n                    img1.jpg\n            class_B/\n                  img1.jpg`,
         notes: [
-            'Input: 224Ã—224 RGB (16Ã—16 patches for ViT)',
-            'Square crops work best â€” transformers are sensitive to aspect ratio',
+            'Input: 224  224 RGB (16  16 patches for ViT)',
+            'Square crops work best     transformers are sensitive to aspect ratio',
             'Same ImageFolder format as Vision CNNs',
         ],
     },
@@ -42,20 +42,20 @@ const DATASET_GUIDES={
     audio: {
         title: 'Audio Dataset',
         format: 'WAV files in per-class subfolders (classification) or wav+txt pairs (ASR)',
-        example: `my_dataset/\n  â”œâ”€â”€ class_A/\n  â”‚     â””â”€â”€ audio1.wav\n  â””â”€â”€ class_B/\n        â””â”€â”€ audio1.wav`,
+        example: `my_dataset/\n            class_A/\n                    audio1.wav\n            class_B/\n                  audio1.wav`,
         notes: [
             'Required sample rate: 16,000 Hz',
             'Supported: .wav (preferred), .flac, .mp3',
-            'Clip duration: 1â€“30 seconds recommended',
+            'Clip duration: 1   30 seconds recommended',
         ],
     },
     edge: {
         title: 'Image Dataset (Mobile-optimised)',
         format: 'ImageFolder (one subfolder per class)',
-        example: `my_dataset/\n  â”œâ”€â”€ class_A/ (images)\n  â””â”€â”€ class_B/ (images)`,
+        example: `my_dataset/\n            class_A/ (images)\n            class_B/ (images)`,
         notes: [
-            'Target input: 224Ã—224 RGB',
-            'Edge models (MobileNet, SqueezeNet) train fast â€” even small datasets help',
+            'Target input: 224  224 RGB',
+            'Edge models (MobileNet, SqueezeNet) train fast     even small datasets help',
             'Quantisation-friendly: keep images crisp and well-lit',
         ],
     },
@@ -186,7 +186,7 @@ export default function SessionManager({ onSessionJoined }) {
                 fetchSessions();
                 return;
             }
-            toast.success('Upload started â€” waiting for Pinata confirmation...');
+            toast.success('Upload started     waiting for Pinata confirmation...');
 
             const MAX_POLLS=60;
             for (let i=0; i<MAX_POLLS; i++) {
@@ -203,7 +203,7 @@ export default function SessionManager({ onSessionJoined }) {
                     return;
                 }
             }
-            toast.error('Publish timed out â€” check backend logs.');
+            toast.error('Publish timed out     check backend logs.');
             fetchSessions();
         } catch (err) {
             toast.error(err.response?.data?.detail || 'Failed to publish final model.');
@@ -315,13 +315,13 @@ export default function SessionManager({ onSessionJoined }) {
                                 <div style={{ flex: 1, minWidth: 0 }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                                         <span style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--color-secondary)' }}>{s.session_name || 'FL Session'}</span>
-                                        <span style={{ fontSize: '0.65rem', fontWeight: 700, color: statusColor[s.status], textTransform: 'uppercase', letterSpacing: '0.06em' }}>â— {s.status}</span>
+                                        <span style={{ fontSize: '0.65rem', fontWeight: 700, color: statusColor[s.status], textTransform: 'uppercase', letterSpacing: '0.06em' }}>    {s.status}</span>
                                         {!s.join_open && s.status=== 'Open' && (
                                             <span style={{ fontSize: '0.62rem', fontWeight: 700, color: 'var(--color-warning)', textTransform: 'uppercase' }}>Requests Locked</span>
                                         )}
                                     </div>
                                     <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>
-                                        Lead: {s.lead_username} Â· Shape: [{s.required_input_shape}] Â· {s.max_rounds} rounds
+                                        Lead: {s.lead_username}    Shape: [{s.required_input_shape}]    {s.max_rounds} rounds
                                     </div>
                                     {Array.isArray(s.participant_usernames) && s.participant_usernames.length>0 && (
                                         <div style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', marginTop: 4 }}>
@@ -418,7 +418,7 @@ export default function SessionManager({ onSessionJoined }) {
                 )}
             </div>
 
-            {/* â”€â”€ Create Session Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/*        Create Session Modal                                                                                                                             */}
             <Modal isOpen={createOpen} onClose={() => setCreateOpen(false)} title="Create FL Session" maxWidth="540px">
                 <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
@@ -455,13 +455,13 @@ export default function SessionManager({ onSessionJoined }) {
                                 required
                                 style={{ background: 'rgba(255,255,255,0.06)', color: 'inherit' }}
                             >
-                                <option value="">â€” Select a base or published model â€”</option>
+                                <option value="">    Select a base or published model    </option>
 
                                 {baseModels.length>0 && (
                                     <optgroup label="Base Models">
                                         {baseModels.map(m => (
                                             <option key={`base-${m.id}`} value={m.id}>
-                                                {m.name} ({m.family}) â€” Base model
+                                                {m.name} ({m.family})     Base model
                                             </option>
                                         ))}
                                     </optgroup>
@@ -471,7 +471,7 @@ export default function SessionManager({ onSessionJoined }) {
                                     <optgroup label="Published Models">
                                         {models.map(m => (
                                             <option key={`published-${m.id}`} value={m.id}>
-                                                {m.name} ({m.architecture_type}) â€” by {m.owner_username}
+                                                {m.name} ({m.architecture_type})     by {m.owner_username}
                                             </option>
                                         ))}
                                     </optgroup>
@@ -502,7 +502,7 @@ export default function SessionManager({ onSessionJoined }) {
 
                     {/* Input shape */}
                     <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Required Input Shape (e.g. 3,224,224 for RGB images Â· 1,512 for NLP)</label>
+                        <label className="form-label">Required Input Shape (e.g. 3,224,224 for RGB images    1,512 for NLP)</label>
                         <input type="text" className="form-input" placeholder="3,224,224" value={createForm.input_shape} onChange={setCreate('input_shape')} required />
                     </div>
 

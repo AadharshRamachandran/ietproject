@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { modelsApi, versionsApi } from '../api/client.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
@@ -46,7 +46,7 @@ export default function ModelDetail() {
             fd.append('metrics_json', metrics);
             fd.append('notes', notes);
             const { data }=await versionsApi.upload(id, fd);
-            toast.success(`Version ${data.version_number} pinned to IPFS! CID: ${data.new_cid.slice(0, 12)}â€¦`);
+            toast.success(`Version ${data.version_number} pinned to IPFS! CID: ${data.new_cid.slice(0, 12)}   `);
             setVersions((v) => [data, ...v]);
             setFile(null);
         } catch (err) {
@@ -165,7 +165,7 @@ export default function ModelDetail() {
                                             accept=".pt,.pkl,.h5,.bin,.onnx,.safetensors"
                                             onChange={e => setFile(e.target.files[0])}
                                         />
-                                        {file && <p style={{ fontSize: '0.72rem', color: 'var(--color-success)', marginTop: 4 }}>âœ“ {file.name} ({(file.size/1024/1024).toFixed(2)} MB)</p>}
+                                        {file && <p style={{ fontSize: '0.72rem', color: 'var(--color-success)', marginTop: 4 }}>    {file.name} ({(file.size/1024/1024).toFixed(2)} MB)</p>}
                                     </div>
                                     <div className="form-group" style={{ marginBottom: 0 }}>
                                         <label className="form-label">Metrics (JSON)</label>
